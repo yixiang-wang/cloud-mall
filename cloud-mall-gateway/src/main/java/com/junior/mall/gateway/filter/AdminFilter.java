@@ -15,21 +15,28 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
-public class UserFilter implements GlobalFilter, Ordered {
+public class AdminFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path=exchange.getRequest().getURI().getPath();
-        if(path.contains("user")||path.contains("cart")||path.contains("order")){
+        if(path.contains("adminlogin")){
+            return chain.filter(exchange);
+        }
+        if(path.contains("admin")){
             // 判断是否登录
             AtomicBoolean isLogin = new AtomicBoolean(false);
+            AtomicBoolean checkAdmin=new AtomicBoolean(false);
             exchange.getSession().subscribe(webSession -> {
                 User user=webSession.getAttribute("user");
                 if (user!=null){
                     isLogin.set(true);
                 }
+                if (user.getRole().equals(2)){
+                    checkAdmin.set(true);
+                }
+
             });
             try {
                 Thread.sleep(200);
@@ -40,6 +47,13 @@ public class UserFilter implements GlobalFilter, Ordered {
                 ServerHttpResponse response=exchange.getResponse();
                 response.setStatusCode(HttpStatus.ACCEPTED);
                 byte[] bytes=ResponseUtils.error(MallExceptionEnum.NEED_LOGIN).toJsonString().getBytes(StandardCharsets.UTF_8);
+                DataBuffer buffer = response.bufferFactory().wrap(bytes);
+                return response.writeWith(Mono.just(buffer));
+            }
+            if (!checkAdmin.get()){
+                ServerHttpResponse response=exchange.getResponse();
+                response.setStatusCode(HttpStatus.ACCEPTED);
+                byte[] bytes=ResponseUtils.error(MallExceptionEnum.NEED_ADMIN).toJsonString().getBytes(StandardCharsets.UTF_8);
                 DataBuffer buffer = response.bufferFactory().wrap(bytes);
                 return response.writeWith(Mono.just(buffer));
             }

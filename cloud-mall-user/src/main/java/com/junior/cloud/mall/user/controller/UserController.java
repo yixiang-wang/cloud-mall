@@ -88,7 +88,7 @@ public class UserController {
     }
 
     @PostMapping("/adminlogin")
-    public ResponseUtils adminLogin(String username, String password) throws UserException {
+    public ResponseUtils adminLogin(String username, String password,HttpServletRequest request) throws UserException {
         if (!StringUtils.hasLength(username)) {
             return ResponseUtils.error(MallExceptionEnum.NEED_USER_NAME);
         }
@@ -102,10 +102,11 @@ public class UserController {
         if (adminUser.getRole() != 2) {
             return ResponseUtils.error(MallExceptionEnum.NEED_ADMIN);
         }
-        //创建token
-        Algorithm algorithm=Algorithm.HMAC256(Constant.JWT_KEY);
-        String token=JWT.create().withClaim(Constant.USER_ID,adminUser.getId()).withClaim(Constant.USER_NAME,adminUser.getUsername()).withClaim(Constant.USER_ROLE,adminUser.getRole()).withExpiresAt(new Date(System.currentTimeMillis()+Constant.EXPIRE_TIME)).sign(algorithm);
-        return ResponseUtils.success(token);
+//        //创建token
+//        Algorithm algorithm=Algorithm.HMAC256(Constant.JWT_KEY);
+//        String token=JWT.create().withClaim(Constant.USER_ID,adminUser.getId()).withClaim(Constant.USER_NAME,adminUser.getUsername()).withClaim(Constant.USER_ROLE,adminUser.getRole()).withExpiresAt(new Date(System.currentTimeMillis()+Constant.EXPIRE_TIME)).sign(algorithm);
+        request.getSession().setAttribute("user",adminUser);
+        return ResponseUtils.success(adminUser);
     }
 
 //    @PostMapping("/sendmail")
