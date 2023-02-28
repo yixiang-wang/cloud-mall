@@ -15,15 +15,14 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class UserFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path=exchange.getRequest().getURI().getPath();
-        if(path.contains("user")||path.contains("cart")||path.contains("order")){
-            // 判断是否登录
+        if(path.contains("logout")||path.contains("cart")||path.contains("order")||path.contains("update")){
+            // 判断是否登录，符合条件时设置为True
             AtomicBoolean isLogin = new AtomicBoolean(false);
             exchange.getSession().subscribe(webSession -> {
                 User user=webSession.getAttribute("user");
@@ -32,10 +31,13 @@ public class UserFilter implements GlobalFilter, Ordered {
                 }
             });
             try {
+                //给予线程时间获取Session
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
+            //未登录时拦截，并直接返回Json响应
             if (!isLogin.get()){
                 ServerHttpResponse response=exchange.getResponse();
                 response.setStatusCode(HttpStatus.ACCEPTED);

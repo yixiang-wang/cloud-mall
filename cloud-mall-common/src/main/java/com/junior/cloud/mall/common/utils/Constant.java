@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-@Component
 public class Constant {
-    public static String FILE_UPLOAD_DIR;
-
     public static String EMAIL_FROM="max2010ps@163.com";
 
     public final static String JWT_KEY="mall";
@@ -21,10 +18,6 @@ public class Constant {
     public final static Long EXPIRE_TIME=1000*60*60*24*10L;
     public final static String JWT_TOKEN="jwt_token";
 
-    @Value("${file.upload.dir}")
-    public void setFileUploadDir(String fileUploadDir) {
-        FILE_UPLOAD_DIR = fileUploadDir;
-    }
 
     public interface ProductListOrderBy {
         Set<String> PRICE_ORDER_ENUM = LettuceSets.newHashSet("price desc", "price asc");
