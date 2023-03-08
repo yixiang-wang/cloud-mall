@@ -21,7 +21,7 @@ public class AdminFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path=exchange.getRequest().getURI().getPath();
-        if(path.contains("adminlogin")){
+        if(path.contains("adminlogin")||path.contains("images")){
             return chain.filter(exchange);
         }
         if(path.contains("admin")){

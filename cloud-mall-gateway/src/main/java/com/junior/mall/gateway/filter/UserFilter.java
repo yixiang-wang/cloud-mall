@@ -21,6 +21,9 @@ public class UserFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path=exchange.getRequest().getURI().getPath();
+        if(path.contains("images")){
+            return chain.filter(exchange);
+        }
         if(path.contains("logout")||path.contains("cart")||path.contains("order")||path.contains("update")){
             // 判断是否登录，符合条件时设置为True
             AtomicBoolean isLogin = new AtomicBoolean(false);
