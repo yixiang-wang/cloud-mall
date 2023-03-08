@@ -29,4 +29,6 @@ public interface ProductService {
     Product getDetail(Integer id);
 
     void batchByExcel(File destFile) throws IOException, ProductException;
+
+    void updateForFeign(Integer productId, Integer stock);
 }

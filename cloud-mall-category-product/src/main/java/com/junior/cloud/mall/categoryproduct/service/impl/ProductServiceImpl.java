@@ -215,4 +215,13 @@ public class ProductServiceImpl implements ProductService {
         inputStream.close();
         return productList;
     }
+
+    @Override
+    public void updateForFeign(Integer productId, Integer stock){
+        Product product=new Product();
+        product.setId(productId);
+        product.setStock(stock);
+        product.setUpdateTime(null);
+        productMapper.updateByPrimaryKeySelective(product);
+    }
 }

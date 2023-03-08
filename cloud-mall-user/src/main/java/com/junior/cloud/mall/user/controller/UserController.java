@@ -11,11 +11,13 @@ import com.junior.cloud.mall.user.service.UserService;
 //import com.junior.mall.service.EmailService;
 //import com.junior.mall.utils.EmailUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
@@ -107,6 +109,11 @@ public class UserController {
 //        String token=JWT.create().withClaim(Constant.USER_ID,adminUser.getId()).withClaim(Constant.USER_NAME,adminUser.getUsername()).withClaim(Constant.USER_ROLE,adminUser.getRole()).withExpiresAt(new Date(System.currentTimeMillis()+Constant.EXPIRE_TIME)).sign(algorithm);
         request.getSession().setAttribute("user",adminUser);
         return ResponseUtils.success(adminUser);
+    }
+
+    @GetMapping("/user/feign/getuser")
+    public User getUserForFeign(HttpSession session){
+        return (User) session.getAttribute("user");
     }
 
 //    @PostMapping("/sendmail")

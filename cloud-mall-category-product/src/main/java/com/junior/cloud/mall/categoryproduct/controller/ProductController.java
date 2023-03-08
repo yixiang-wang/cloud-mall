@@ -6,7 +6,6 @@ import com.junior.cloud.mall.categoryproduct.model.request.UpdateProductReq;
 import com.junior.cloud.mall.categoryproduct.service.ProductService;
 import com.junior.cloud.mall.common.exception.MallExceptionEnum;
 import com.junior.cloud.mall.common.exception.ProductException;
-import com.junior.cloud.mall.common.utils.Constant;
 import com.junior.cloud.mall.common.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +61,7 @@ public class ProductController {
             throw new RuntimeException(e);
         }
         String result;
-            result = "http://"+uri+ "/images/" + newFileName;
+            result = "http://"+uri+ "/category-product/images/" + newFileName;
         return ResponseUtils.success(result);
     }
 
@@ -97,5 +96,10 @@ public class ProductController {
         }
         productService.batchByExcel(destFile);
         return ResponseUtils.success();
+    }
+
+    @PostMapping("/feign/product/update")
+    public void updateForFeign(Integer productId,Integer stock){
+        productService.updateForFeign(productId,stock);
     }
 }
