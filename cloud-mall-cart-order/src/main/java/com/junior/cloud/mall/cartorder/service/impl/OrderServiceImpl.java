@@ -26,6 +26,7 @@ import com.junior.cloud.mall.common.exception.ProductException;
 import com.junior.cloud.mall.common.utils.Constant;
 import com.junior.cloud.mall.common.utils.QRCodeGenerator;
 import com.junior.cloud.mall.user.model.pojo.User;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,8 @@ public class OrderServiceImpl implements OrderService {
     String ip;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional
     public String create(CreateOrderReq createOrderReq) throws ProductException {
         Integer userId = userFeignClient.getUserForFeign().getId();
 
@@ -112,7 +114,6 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(userId);
         order.setTotalPrice(totalPrice);
         orderMapper.insertSelective(order);
-
         return orderNo;
     }
 
